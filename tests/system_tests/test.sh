@@ -1,3 +1,3 @@
 #!/bin/sh
-../../csv2md.py test.csv new.md ';'
+cat test.csv | ../../csv2md.py ';' > new.md
 diff old.md new.md
