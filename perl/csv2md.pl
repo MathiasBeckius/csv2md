@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-#
 # Converts a CSV (comma-separated values) formatted table into a
 # MD (markdown) formatted equivalent.
 #
@@ -13,7 +12,6 @@
 #
 # If semi-colon is used, then this should be specified instead:
 #     cat input.csv | ./csv2md.pl ';' > output.md
-#
 
 use strict;
 use warnings;
@@ -21,14 +19,14 @@ use warnings;
 sub program_info
 {
     my $info = "Converts a CSV (comma-separated values) formatted table into a " . 
-               "MD (markdown) formatted equivalent.\n\n" .
+               "MD (markdown) formatted equivalent.\r\n\r\n" .
                "The CSV-formatted lines is expected to come from STDIN. The " .
-               "MD-formatted output is sent to STDOUT.\n\n" .
-               "If comma is used as a delimiter, both command lines are valid:\n" .
-               "\tcat input.csv | ./csv2md.pl > output.md\n" .
-               "\tcat input.csv | ./csv2md.pl ',' > output.md\n\n" .
-               "If semi-colon is used, then this should be specified instead:\n" .
-               "\tcat input.csv | ./csv2md.pl ';' > output.md\n";
+               "MD-formatted output is sent to STDOUT.\r\n\r\n" .
+               "If comma is used as a delimiter, both command lines are valid:\r\n" .
+               "\tcat input.csv | ./csv2md.pl > output.md\r\n" .
+               "\tcat input.csv | ./csv2md.pl ',' > output.md\r\n\r\n" .
+               "If semi-colon is used, then this should be specified instead:\r\n" .
+               "\tcat input.csv | ./csv2md.pl ';' > output.md\r\n";
     return $info;
 }
 
@@ -51,7 +49,7 @@ if ($nr_of_arguments == 1)
         $delimiter = $argument;
         if ($delimiter ne ";" && $delimiter ne ",")
         {
-            print "Invalid delimiter! You must use comma or semicolon!\n";
+            print "Invalid delimiter! You must use comma or semicolon!\r\n";
             exit 1;
         }
     }
@@ -59,43 +57,25 @@ if ($nr_of_arguments == 1)
 # More than one argument...
 elsif ($nr_of_arguments > 1)
 {
-    print "Invalid arguments list!\n\n";
+    print "Invalid arguments list!\r\n\r\n";
     print program_info();
     exit 1;
 }
 
 my $is_header_row = 1;
 my $line;
-my $row;
-
-#my $foobar = "Hello,\nworld!";
-#print "$foobar\n\n";
-#$foobar =~ tr/\n//d;
-#$foobar =~ tr/,//d;
-#print "$foobar\n";
-
 foreach $line (<STDIN>)
 {
     $line =~ tr/\r//d;
     $line =~ tr/\n//d;
-    #local $_ = $line;
-    #s/;/|/g;
-    #s/{$delimiter}/|/g;
-    #$row = $_;
-    #print "|" . "$row" . "|\n";
+    local $_ = $line;
+    eval("s/$delimiter/|/g");
+    print "|" . "$_" . "|\r\n";
     if ($is_header_row)
     {
-        my $nr_of_columns = ($line =~ tr/;//) + 1;
-        print "|", "---|" x $nr_of_columns, "\n";
+        my $nr_of_delimiters = () = $line =~ /$delimiter/g;
+        my $nr_of_columns = $nr_of_delimiters + 1;
+        print "|", "---|" x $nr_of_columns, "\r\n";
     }
     $is_header_row = 0;
 }
-
-
-#is_header_row = True
-#for line in sys.stdin:
-#    line = line.replace('\r', '').replace('\n', '')
-##    print('|' + line.replace(delimiter, '|') + '|')
-#   if is_header_row:
-#        print('|' + '---|' * (line.count(delimiter) + 1))
-#    is_header_row = False
