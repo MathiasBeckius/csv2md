@@ -25,7 +25,7 @@ def program_info():
             '\tcat input.csv | ./csv2md.py > output.md\n' +                         \
             '\tcat input.csv | ./csv2md.py \',\' > output.md\n\n' +                 \
             'If semi-colon is used, then this should be specified instead:\n' +     \
-            '\tcat input.csv | ./csv2md.py ';' > output.md'
+            '\tcat input.csv | ./csv2md.py \';\' > output.md'
     return info
 
 if __name__ == '__main__':
@@ -41,11 +41,11 @@ if __name__ == '__main__':
         else:
             # Assume it is delimiter
             delimiter = argument
-            if delimiter != ";" and delimiter != ",":
-                print("Invalid delimiter! You must use comma or semicolon!")
+            if delimiter != ';' and delimiter != ',':
+                print('Invalid delimiter! You must use comma or semicolon!')
                 sys.exit()
     else: #  More than one argument...
-        print('\nInvalid arguments list!\n')
+        print('Invalid arguments list!\n')
         print(program_info())
         sys.exit()
     

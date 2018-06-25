@@ -5,14 +5,14 @@ The CSV-formatted lines is expected to come from STDIN. The MD-formatted output 
 
 If comma is used as a delimiter, both command lines are valid:
 
-    cat input.csv | ./csv2md.py > output.md
-    cat input.csv | ./csv2md.py ',' > output.md
+    cat input.csv | ./csv2md.pl > output.md
+    cat input.csv | ./csv2md.pl ',' > output.md
 
 If semi-colon is used, then this should be specified instead:
 
-    cat input.csv | ./csv2md.py ';' > output.md
+    cat input.csv | ./csv2md.pl ';' > output.md
     
 # Ownership and license
 Author: Mathias Beckius
 
-License: See [LICENSE](./LICENSE "")
+License: See [LICENSE](../LICENSE "")

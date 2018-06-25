@@ -1,0 +1,18 @@
+# Description
+Converts a CSV (comma-separated values) formatted table into a MD (markdown) formatted equivalent.
+
+The CSV-formatted lines is expected to come from STDIN. The MD-formatted output is sent to STDOUT.
+
+If comma is used as a delimiter, both command lines are valid:
+
+    cat input.csv | ./csv2md.py > output.md
+    cat input.csv | ./csv2md.py ',' > output.md
+
+If semi-colon is used, then this should be specified instead:
+
+    cat input.csv | ./csv2md.py ';' > output.md
+    
+# Ownership and license
+Author: Mathias Beckius
+
+License: See [LICENSE](../LICENSE "")
