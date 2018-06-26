@@ -49,7 +49,7 @@ if ($nr_of_arguments == 1)
         $delimiter = $argument;
         if ($delimiter ne ";" && $delimiter ne ",")
         {
-            print "Invalid delimiter! You must use comma or semicolon!\r\n";
+            print STDERR "Invalid delimiter! You must use comma or semicolon!\r\n";
             exit 1;
         }
     }
@@ -57,8 +57,8 @@ if ($nr_of_arguments == 1)
 # More than one argument...
 elsif ($nr_of_arguments > 1)
 {
-    print "Invalid arguments list!\r\n\r\n";
-    print program_info();
+    print STDERR "Invalid arguments list!\r\n\r\n";
+    print STDERR program_info();
     exit 1;
 }
 

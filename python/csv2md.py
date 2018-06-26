@@ -42,11 +42,11 @@ if __name__ == '__main__':
             # Assume it is delimiter
             delimiter = argument
             if delimiter != ';' and delimiter != ',':
-                print('Invalid delimiter! You must use comma or semicolon!')
+                print('Invalid delimiter! You must use comma or semicolon!', file=sys.stderr)
                 sys.exit()
     else: #  More than one argument...
-        print('Invalid arguments list!\n')
-        print(program_info())
+        print('Invalid arguments list!\n', file=sys.stderr)
+        print(program_info(), file=sys.stderr)
         sys.exit()
     
     is_header_row = True
