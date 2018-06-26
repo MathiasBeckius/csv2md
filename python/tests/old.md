@@ -1,5 +1,0 @@
-|﻿Column 1|Column 2|Column 3|
-|---|---|---|
-|qwerty|asdfg|zxcvb|
-|zxcvb|qwerty|asdfg|
-|asdfg|zxcvb|qwerty|
