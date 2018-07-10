@@ -15,6 +15,16 @@
 
 use strict;
 use warnings;
+use FileHandle;
+
+STDOUT->autoflush;
+
+sub report_error
+{
+    my $error_message = shift;
+    print STDERR $error_message . "\r\n";
+    exit 1;
+}
 
 sub program_info
 {
@@ -26,7 +36,7 @@ sub program_info
                "\tcat input.csv | ./csv2md.pl > output.md\r\n" .
                "\tcat input.csv | ./csv2md.pl ',' > output.md\r\n\r\n" .
                "If semi-colon is used, then this should be specified instead:\r\n" .
-               "\tcat input.csv | ./csv2md.pl ';' > output.md\r\n";
+               "\tcat input.csv | ./csv2md.pl ';' > output.md";
     return $info;
 }
 
@@ -40,8 +50,8 @@ if ($nr_of_arguments == 1)
     my $argument = lc $ARGV[0];
     if ($argument eq '--help')
     {
-        print program_info();
-        exit 1;
+        print program_info() . "\r\n";
+        exit 0;
     }
     else
     {
@@ -49,17 +59,14 @@ if ($nr_of_arguments == 1)
         $delimiter = $argument;
         if ($delimiter ne ";" && $delimiter ne ",")
         {
-            print STDERR "Invalid delimiter! You must use comma or semicolon!\r\n";
-            exit 1;
+            report_error("Invalid delimiter! You must use comma or semicolon!");
         }
     }
 }
 # More than one argument...
 elsif ($nr_of_arguments > 1)
 {
-    print STDERR "Invalid arguments list!\r\n\r\n";
-    print STDERR program_info();
-    exit 1;
+    report_error("Invalid arguments list!\r\n\r\n" . program_info());
 }
 
 my $is_header_row = 1;
@@ -68,6 +75,10 @@ foreach $line (<STDIN>)
 {
     $line =~ tr/\r//d;
     $line =~ tr/\n//d;
+    if ($line !~ /[[:print:]]/)
+    {
+        report_error("Non-printable characters!");
+    }
     local $_ = $line;
     eval("s/$delimiter/|/g");
     print "|" . "$_" . "|\r\n";

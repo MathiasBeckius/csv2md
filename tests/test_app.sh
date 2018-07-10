@@ -1,7 +1,20 @@
 #!/bin/sh
 APP_NAME="csv2md"
-APP_PORT=$1 # perl or python
-OPTION=$2
+APP_PORT="$1" # perl or python
+OPTION="$2"
+
+check_output() {
+    ACTUAL_OUTPUT="$1"
+    EXPECTED_OUTPUT="$2"
+    MESSAGE="$3"
+    OPTION="$4"
+    if ! cmp -s $ACTUAL_OUTPUT $EXPECTED_OUTPUT; then
+        echo -e "\nERROR: $MESSAGE"
+        if [ "$OPTION" == "-v" ]; then
+            diff $ACTUAL_OUTPUT $EXPECTED_OUTPUT
+        fi
+    fi
+}
 
 if [ "$APP_PORT" == "perl" ]; then
     FILE_EXTENSION="pl"
@@ -18,51 +31,38 @@ APPLICATION="../$APP_PORT/$FILENAME"
 if [ -f "$APPLICATION" ]; then
     echo "Testing $FILENAME..."
 
-    cat test.csv | $APPLICATION ';' > new.md
-    if ! cmp -s old.md new.md; then
-        echo -e "\nUnexpected difference in output, error when converting CSV -> MD (semi-colon delimiter)"
-        if [ "$OPTION" == "-v" ]; then
-            diff old.md new.md
-        fi
-    fi
+    ACTUAL_OUTPUT=actual_output/new.md
+    EXPECTED_OUTPUT=expected_output/old.md
+    cat input/test.csv | $APPLICATION ';' > $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "conversion, semi-colon delimiter" $OPTION
 
-    cat test.csv | sed 's/;/,/g' | $APPLICATION > new.md
-    if ! cmp -s old.md new.md; then
-        echo -e "\nUnexpected difference in output, error when converting CSV -> MD (comma delimiter, standard option)"
-        if [ "$OPTION" == "-v" ]; then
-            diff old.md new.md
-        fi
-    fi
+    ACTUAL_OUTPUT=actual_output/new.md
+    EXPECTED_OUTPUT=expected_output/old.md
+    cat input/test.csv | sed 's/;/,/g' | $APPLICATION > $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "conversion, comma delimiter (standard option)" $OPTION
 
-    cat test.csv | sed 's/;/,/g' | $APPLICATION ',' > new.md
-    if ! cmp -s old.md new.md; then
-        echo -e "\nUnexpected difference in output, error when converting CSV -> MD (comma delimiter)"
-        if [ "$OPTION" == "-v" ]; then
-            diff old.md new.md
-        fi
-    fi
+    ACTUAL_OUTPUT=actual_output/new.md
+    EXPECTED_OUTPUT=expected_output/old.md
+    cat input/test.csv | sed 's/;/,/g' | $APPLICATION ',' > $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "conversion, comma delimiter" $OPTION
 
-    $APPLICATION --help > help_param.txt
-    if ! cmp -s "$APP_PORT/expected_help_param.txt" help_param.txt; then
-        echo -e "\nUnexpected difference in output, error when reading help text"
-        if [ "$OPTION" == "-v" ]; then
-            diff "$APP_PORT/expected_help_param.txt" help_param.txt
-        fi
-    fi
+    ACTUAL_OUTPUT=actual_output/help_param.txt
+    EXPECTED_OUTPUT="expected_output/$APP_PORT/expected_help_param.txt"
+    $APPLICATION --help > $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "request help text" $OPTION
 
-    $APPLICATION sdf sdf 2> invalid_arg_list.txt
-    if ! cmp -s "$APP_PORT/expected_invalid_arg_list.txt" invalid_arg_list.txt; then
-        echo -e "\nUnexpected difference in output, error when using invalid argument list"
-        if [ "$OPTION" == "-v" ]; then
-            diff "$APP_PORT/expected_invalid_arg_list.txt" invalid_arg_list.txt
-        fi
-    fi
+    ACTUAL_OUTPUT=actual_output/invalid_arg_list.txt
+    EXPECTED_OUTPUT="expected_output/$APP_PORT/expected_invalid_arg_list.txt"
+    $APPLICATION sdf sdf 2> $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "invalid argument list" $OPTION
 
-    $APPLICATION '.' 2> invalid_delimiter.txt
-    if ! cmp -s expected_invalid_delimiter.txt invalid_delimiter.txt; then
-        echo -e "\nUnexpected difference in output, error when specifying invalid delimiter"
-        if [ "$OPTION" == "-v" ]; then
-            diff expected_invalid_delimiter.txt invalid_delimiter.txt
-        fi
-    fi
+    ACTUAL_OUTPUT=actual_output/invalid_delimiter.txt
+    EXPECTED_OUTPUT=expected_output/expected_invalid_delimiter.txt
+    $APPLICATION '.' 2> $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "invalid delimiter" $OPTION
+
+    ACTUAL_OUTPUT=actual_output/nonprintable.txt
+    EXPECTED_OUTPUT=expected_output/expected_nonprintable.txt
+    cat input/toxic.png | $APPLICATION &> $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "non-printable characters" $OPTION
 fi
