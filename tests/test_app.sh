@@ -26,7 +26,7 @@ else
 fi
 
 FILENAME="$APP_NAME.$FILE_EXTENSION"
-APPLICATION="../$APP_PORT/$FILENAME"
+APPLICATION="../application/$APP_PORT/$FILENAME"
 
 if [ -f "$APPLICATION" ]; then
     echo "Testing $FILENAME..."
