@@ -15,4 +15,4 @@ If semi-colon is used, then this should be specified instead:
 # Ownership and license
 Author: Mathias Beckius
 
-License: See [LICENSE](../LICENSE "")
+License: See [LICENSE](../../LICENSE "")
