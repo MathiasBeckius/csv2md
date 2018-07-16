@@ -1,7 +1,7 @@
 #!/bin/sh
 OPTION=$1
 
-echo "Running tests!"
+echo "Running application tests!"
 echo "-------------------------------------------------------------------------"
 ./test_app.sh perl $OPTION
 echo "-------------------------------------------------------------------------"

@@ -46,6 +46,11 @@ if [ -f "$APPLICATION" ]; then
     cat input/test.csv | sed 's/;/,/g' | $APPLICATION ',' > $ACTUAL_OUTPUT
     check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "conversion, comma delimiter" $OPTION
 
+    ACTUAL_OUTPUT=actual_output/table_linebreaks.md
+    EXPECTED_OUTPUT=expected_output/expected_table_linebreaks.md
+    cat input/table_linebreaks.csv | sed 's/;/,/g' | $APPLICATION ',' > $ACTUAL_OUTPUT
+    check_output $ACTUAL_OUTPUT $EXPECTED_OUTPUT "conversion, multi-line columns, comma delimiter" $OPTION
+
     ACTUAL_OUTPUT=actual_output/help_param.txt
     EXPECTED_OUTPUT="expected_output/$APP_PORT/expected_help_param.txt"
     $APPLICATION --help > $ACTUAL_OUTPUT
